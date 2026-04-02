@@ -1,0 +1,36 @@
+# Virtual environment
+env_CLIOS/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Git
+.git/
+.gitattributes
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Output artifacts (generated at runtime)
+output/
+
+# Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Docs
+README.md
+ARCHITECTURE.txt

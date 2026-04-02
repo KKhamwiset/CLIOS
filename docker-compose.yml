@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  # ── Ollama (embedding model server) ──────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: clios-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:11434/api/tags || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── CLIOS Application ───────────────────────────────────
+  clios:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clios-app
+    env_file:
+      - .env
+    environment:
+      # Override Ollama URL to point to the companion container
+      - OLLAMA_URL=http://ollama:11434/api/embeddings
+    depends_on:
+      ollama:
+        condition: service_healthy
+    stdin_open: true   # Keep stdin open for interactive CLI
+    tty: true          # Allocate a pseudo-TTY
+    volumes:
+      - ./output:/app/output   # Persist topology renders on host
+    restart: "no"
+
+volumes:
+  ollama_data:
